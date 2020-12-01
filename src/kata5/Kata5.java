@@ -16,16 +16,21 @@ import java.sql.Statement;
 public class Kata5 {
 
     public static void main(String[] args) {
-        Connection conn=conectar();
+        String url = "jdbc:sqlite:Kata5.db";
+        Connection conn=conectar(url);
+        /**
         consulta(conn);
+        **/
+        
+        crearTabla(conn);
+        
         close(conn);
         
     }
     
-    private static  Connection conectar(){
+    private static  Connection conectar(String url){
         Connection conn = null;
         try {
-            String url = "jdbc:sqlite:Kata5.db";
             conn = DriverManager.getConnection(url);
             System.out.println("Connexión a SQLite establecida");
         } catch (SQLException e) {
@@ -62,6 +67,21 @@ public class Kata5 {
                 System.out.println(ex.getMessage());
             }
         }
+
+    private static void crearTabla(Connection conn) {
+        String sql = "CREATE TABLE IF NOT EXISTS direcc_email (\n"
+        + " id integer PRIMARY KEY AUTOINCREMENT,\n"
+        + " direccion text NOT NULL);";
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.execute(sql);
+            System.out.println("Tabla creada");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } 
+    }
+    
+    
 }
 
 
