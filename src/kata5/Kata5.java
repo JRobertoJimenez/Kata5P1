@@ -3,9 +3,11 @@ package kata5;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 
 
@@ -14,15 +16,19 @@ import java.sql.Statement;
  * @author José Roberto Jiménez
  */
 public class Kata5 {
+    private static final String fileName="email.txt";
+    private static final String url = "jdbc:sqlite:Mail.db";
+    private static List<String> mailList =null;
 
     public static void main(String[] args) {
-        String url = "jdbc:sqlite:Kata5.db";
+        mailList=MailListReader.read(fileName);
         Connection conn=conectar(url);
         /**
         consulta(conn);
         **/
         
         crearTabla(conn);
+        insertar(conn, mailList);
         
         close(conn);
         
@@ -79,6 +85,22 @@ public class Kata5 {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } 
+    }
+    
+    private static void insertar(Connection conn, List<String> mailList){
+        for (String email : mailList) {
+            String sql = "INSERT INTO direcc_email(direccion) VALUES(?)";
+            try {
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, email);
+                System.out.println("Registro insertado");
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        
     }
     
     
